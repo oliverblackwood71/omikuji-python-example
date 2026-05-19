@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>おみくじポケット</title>
+    <meta
+      name="description"
+      content="Pythonおみくじから発展した、ブラウザで遊べる小さなおみくじWeb UIです。"
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-panel" aria-labelledby="game-title">
+        <div class="brand-row" aria-label="おみくじポケット">
+          <span class="brand-dot brand-dot-red"></span>
+          <span class="brand-dot brand-dot-blue"></span>
+          <span class="brand-dot brand-dot-yellow"></span>
+        </div>
+
+        <div class="intro">
+          <p class="mini-label">PythonからWeb UIへ</p>
+          <h1 id="game-title">おみくじポケット</h1>
+          <p>
+            ボタンを押すだけで今日の運勢をチェック。ターミナル版のおみくじを、
+            ブラウザで遊べる小さなゲーム風UIにしました。
+          </p>
+        </div>
+
+        <div class="machine" aria-live="polite">
+          <div class="ticket" id="ticket">
+            <p class="ticket-label">今日の結果</p>
+            <p class="fortune-result" id="fortuneResult">まだ引いていません</p>
+            <p class="fortune-message" id="fortuneMessage">
+              まずは大きなボタンを押して、おみくじを引いてみましょう。
+            </p>
+          </div>
+
+          <button class="draw-button" id="drawButton" type="button">
+            おみくじを引く
+          </button>
+
+          <div class="status-grid" aria-label="プレイ状況">
+            <div class="status-card">
+              <span class="status-label">引いた回数</span>
+              <strong id="drawCount">0回</strong>
+            </div>
+            <div class="status-card">
+              <span class="status-label">今日のベスト</span>
+              <strong id="bestFortune">まだなし</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

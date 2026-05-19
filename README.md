@@ -7,9 +7,10 @@
 ## ファイル構成
 
 - `omikuji.py`: おみくじプログラム本体
+- `docs/`: ブラウザで遊べるWeb UI版
 - `README.md`: 使い方の説明
 
-## PowerShellでの実行方法
+## Python版の実行方法
 
 このフォルダで、次のコマンドを実行します。
 
@@ -18,6 +19,24 @@ python .\omikuji.py
 ```
 
 もし `python` コマンドが使えない場合は、Pythonをインストールするか、環境に合わせたPython実行コマンドを使ってください。
+
+## Web UI版で遊ぶ
+
+GitHub Pagesで公開しています。
+
+[おみくじポケットで遊ぶ](https://oliverblackwood71.github.io/omikuji-python-example/)
+
+ローカルで開く場合は、次のファイルをブラウザで開きます。
+
+```text
+docs/index.html
+```
+
+Web UI版は、Python版と同じ「ランダムに結果を選ぶ」という考え方を、HTML/CSS/JavaScriptでブラウザ向けに作り直したものです。
+
+- HTML: 画面の部品
+- CSS: 見た目とゲーム風の雰囲気
+- JavaScript: ボタンを押したときの動き
 
 ## 実行例
 
