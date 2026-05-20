@@ -20,12 +20,32 @@
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   color: var(--ink);
   font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
   background:
     radial-gradient(circle at 12% 18%, rgba(255, 216, 77, 0.38), transparent 28%),
     radial-gradient(circle at 85% 12%, rgba(47, 128, 237, 0.2), transparent 26%),
     linear-gradient(135deg, #f7fbff 0%, #eef7ff 48%, #fff8dc 100%);
+}
+
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -24px;
+  width: 12px;
+  height: 18px;
+  border: 2px solid rgba(23, 32, 51, 0.22);
+  border-radius: 4px;
+  animation: confetti-fall var(--fall-duration, 1200ms) ease-out forwards;
+  transform: translate3d(0, 0, 0) rotate(0deg);
 }
 
 .app-shell {
@@ -80,6 +100,10 @@ body {
   height: 18px;
   border: 3px solid var(--ink);
   border-radius: 999px;
+}
+
+.brand-dot.is-pulsing {
+  animation: lamp-pulse 520ms ease-in-out infinite;
 }
 
 .brand-dot-red {
@@ -174,6 +198,10 @@ h1 {
     transform 180ms ease,
     background-color 180ms ease,
     box-shadow 180ms ease;
+}
+
+.ticket.is-revealed {
+  animation: pop-reveal 360ms cubic-bezier(0.18, 0.9, 0.28, 1.2);
 }
 
 .ticket.is-drawing {
@@ -299,6 +327,48 @@ h1 {
 
   75% {
     transform: rotate(-0.7deg) scale(1.01);
+  }
+}
+
+@keyframes pop-reveal {
+  0% {
+    opacity: 0.86;
+    transform: translateY(18px) scale(0.94) rotate(-1deg);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.025) rotate(0.4deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, -24px, 0) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--drift, 20px), 105vh, 0) rotate(var(--spin, 280deg));
+  }
+}
+
+@keyframes lamp-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: scale(1);
+  }
+
+  50% {
+    filter: brightness(1.35);
+    transform: scale(1.12);
   }
 }
 

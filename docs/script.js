@@ -32,6 +32,8 @@ const fortuneMessage = document.querySelector("#fortuneMessage");
 const drawCount = document.querySelector("#drawCount");
 const bestFortune = document.querySelector("#bestFortune");
 const soundButton = document.querySelector("#soundButton");
+const confettiLayer = document.querySelector("#confettiLayer");
+const brandDots = document.querySelectorAll(".brand-dot");
 
 let count = 0;
 let best = null;
@@ -83,6 +85,10 @@ function playMelodyStep(index = 0) {
     playTone(bass[index % bass.length], now, 0.18, { volume: 0.025, type: "square" });
   }
 
+  brandDots.forEach((dot, dotIndex) => {
+    dot.classList.toggle("is-pulsing", dotIndex === index % brandDots.length);
+  });
+
   bgmTimer = window.setTimeout(() => playMelodyStep(index + 1), 260);
 }
 
@@ -104,6 +110,8 @@ function stopMusic() {
     window.clearTimeout(bgmTimer);
     bgmTimer = null;
   }
+
+  brandDots.forEach((dot) => dot.classList.remove("is-pulsing"));
 }
 
 function playDrawSound() {
@@ -135,6 +143,35 @@ function setTicketClass(className) {
   ticket.classList.add(className);
 }
 
+function revealTicket() {
+  ticket.classList.remove("is-revealed");
+  void ticket.offsetWidth;
+  ticket.classList.add("is-revealed");
+}
+
+function launchConfetti() {
+  const colors = ["#f04f4f", "#2f80ed", "#ffd84d", "#2dbf78", "#ffffff"];
+
+  for (let i = 0; i < 48; i += 1) {
+    const piece = document.createElement("span");
+    const color = colors[i % colors.length];
+    const left = Math.random() * 100;
+    const drift = (Math.random() * 180 - 90).toFixed(0);
+    const spin = (Math.random() * 720 + 180).toFixed(0);
+    const duration = Math.floor(Math.random() * 800 + 1000);
+
+    piece.className = "confetti-piece";
+    piece.style.left = `${left}vw`;
+    piece.style.background = color;
+    piece.style.setProperty("--drift", `${drift}px`);
+    piece.style.setProperty("--spin", `${spin}deg`);
+    piece.style.setProperty("--fall-duration", `${duration}ms`);
+    confettiLayer.append(piece);
+
+    window.setTimeout(() => piece.remove(), duration + 150);
+  }
+}
+
 function drawFortune() {
   if (isDrawing) {
     return;
@@ -157,6 +194,11 @@ function drawFortune() {
     fortuneMessage.textContent = fortune.message;
     updateBest(fortune);
     setTicketClass(fortune.className);
+    revealTicket();
+
+    if (fortune.label === "大吉") {
+      launchConfetti();
+    }
 
     ticket.classList.remove("is-drawing");
     drawButton.classList.remove("is-pressed");
