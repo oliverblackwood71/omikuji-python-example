@@ -34,13 +34,77 @@ const bestFortune = document.querySelector("#bestFortune");
 const soundButton = document.querySelector("#soundButton");
 const confettiLayer = document.querySelector("#confettiLayer");
 const brandDots = document.querySelectorAll(".brand-dot");
+const historyList = document.querySelector("#historyList");
+const resetButton = document.querySelector("#resetButton");
+
+const storageKey = "omikuji-pocket-state";
 
 let count = 0;
 let best = null;
+let history = [];
 let isDrawing = false;
 let audioContext = null;
 let bgmTimer = null;
 let musicOn = false;
+
+function findFortuneByLabel(label) {
+  return fortunes.find((fortune) => fortune.label === label) || null;
+}
+
+function saveState() {
+  const state = {
+    count,
+    bestLabel: best ? best.label : null,
+    history,
+  };
+
+  localStorage.setItem(storageKey, JSON.stringify(state));
+}
+
+function renderHistory() {
+  historyList.innerHTML = "";
+
+  if (history.length === 0) {
+    const emptyItem = document.createElement("li");
+    emptyItem.textContent = "まだ引いていません";
+    historyList.append(emptyItem);
+    return;
+  }
+
+  history.forEach((label) => {
+    const item = document.createElement("li");
+    item.textContent = label;
+    historyList.append(item);
+  });
+}
+
+function renderState() {
+  drawCount.textContent = `${count}回`;
+  bestFortune.textContent = best ? best.label : "まだなし";
+  renderHistory();
+}
+
+function loadState() {
+  const saved = localStorage.getItem(storageKey);
+
+  if (!saved) {
+    renderState();
+    return;
+  }
+
+  try {
+    const state = JSON.parse(saved);
+    count = Number.isInteger(state.count) ? state.count : 0;
+    best = state.bestLabel ? findFortuneByLabel(state.bestLabel) : null;
+    history = Array.isArray(state.history) ? state.history.slice(0, 5) : [];
+  } catch {
+    count = 0;
+    best = null;
+    history = [];
+  }
+
+  renderState();
+}
 
 function getAudioContext() {
   if (!audioContext) {
@@ -189,10 +253,12 @@ function drawFortune() {
     const fortune = pickFortune();
 
     count += 1;
-    drawCount.textContent = `${count}回`;
     fortuneResult.textContent = fortune.label;
     fortuneMessage.textContent = fortune.message;
     updateBest(fortune);
+    history = [fortune.label, ...history].slice(0, 5);
+    saveState();
+    renderState();
     setTicketClass(fortune.className);
     revealTicket();
 
@@ -207,7 +273,17 @@ function drawFortune() {
   }, 720);
 }
 
+function resetState() {
+  count = 0;
+  best = null;
+  history = [];
+  localStorage.removeItem(storageKey);
+  renderState();
+}
+
+loadState();
 drawButton.addEventListener("click", drawFortune);
+resetButton.addEventListener("click", resetState);
 soundButton.addEventListener("click", async () => {
   if (musicOn) {
     stopMusic();
