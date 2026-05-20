@@ -14,9 +14,14 @@
     <main class="app-shell">
       <section class="game-panel" aria-labelledby="game-title">
         <div class="brand-row" aria-label="おみくじポケット">
-          <span class="brand-dot brand-dot-red"></span>
-          <span class="brand-dot brand-dot-blue"></span>
-          <span class="brand-dot brand-dot-yellow"></span>
+          <div class="brand-lights" aria-hidden="true">
+            <span class="brand-dot brand-dot-red"></span>
+            <span class="brand-dot brand-dot-blue"></span>
+            <span class="brand-dot brand-dot-yellow"></span>
+          </div>
+          <button class="sound-button" id="soundButton" type="button" aria-pressed="false">
+            BGM OFF
+          </button>
         </div>
 
         <div class="intro">
@@ -31,7 +36,7 @@
         <div class="machine" aria-live="polite">
           <div class="ticket" id="ticket">
             <p class="ticket-label">今日の結果</p>
-            <p class="fortune-result" id="fortuneResult">まだ引いていません</p>
+            <p class="fortune-result" id="fortuneResult">未抽選</p>
             <p class="fortune-message" id="fortuneMessage">
               まずは大きなボタンを押して、おみくじを引いてみましょう。
             </p>

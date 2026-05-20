@@ -31,10 +31,92 @@ const fortuneResult = document.querySelector("#fortuneResult");
 const fortuneMessage = document.querySelector("#fortuneMessage");
 const drawCount = document.querySelector("#drawCount");
 const bestFortune = document.querySelector("#bestFortune");
+const soundButton = document.querySelector("#soundButton");
 
 let count = 0;
 let best = null;
 let isDrawing = false;
+let audioContext = null;
+let bgmTimer = null;
+let musicOn = false;
+
+function getAudioContext() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  return audioContext;
+}
+
+function playTone(frequency, startTime, duration, options = {}) {
+  const context = getAudioContext();
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  const volume = options.volume ?? 0.05;
+
+  oscillator.type = options.type || "square";
+  oscillator.frequency.setValueAtTime(frequency, startTime);
+
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(volume, startTime + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+  oscillator.connect(gain);
+  gain.connect(context.destination);
+  oscillator.start(startTime);
+  oscillator.stop(startTime + duration + 0.03);
+}
+
+function playMelodyStep(index = 0) {
+  if (!musicOn) {
+    return;
+  }
+
+  const context = getAudioContext();
+  const melody = [523.25, 659.25, 783.99, 659.25, 587.33, 783.99, 880, 783.99];
+  const bass = [261.63, 329.63, 392, 329.63];
+  const now = context.currentTime;
+
+  playTone(melody[index % melody.length], now, 0.16, { volume: 0.035, type: "triangle" });
+
+  if (index % 2 === 0) {
+    playTone(bass[index % bass.length], now, 0.18, { volume: 0.025, type: "square" });
+  }
+
+  bgmTimer = window.setTimeout(() => playMelodyStep(index + 1), 260);
+}
+
+async function startMusic() {
+  const context = getAudioContext();
+  await context.resume();
+  musicOn = true;
+  soundButton.textContent = "BGM ON";
+  soundButton.setAttribute("aria-pressed", "true");
+  playMelodyStep();
+}
+
+function stopMusic() {
+  musicOn = false;
+  soundButton.textContent = "BGM OFF";
+  soundButton.setAttribute("aria-pressed", "false");
+
+  if (bgmTimer) {
+    window.clearTimeout(bgmTimer);
+    bgmTimer = null;
+  }
+}
+
+function playDrawSound() {
+  if (!musicOn) {
+    return;
+  }
+
+  const context = getAudioContext();
+  const now = context.currentTime;
+  playTone(440, now, 0.08, { volume: 0.07, type: "square" });
+  playTone(660, now + 0.08, 0.08, { volume: 0.07, type: "square" });
+  playTone(880, now + 0.16, 0.14, { volume: 0.08, type: "triangle" });
+}
 
 function pickFortune() {
   return fortunes[Math.floor(Math.random() * fortunes.length)];
@@ -58,6 +140,7 @@ function drawFortune() {
     return;
   }
 
+  playDrawSound();
   isDrawing = true;
   drawButton.disabled = true;
   drawButton.classList.add("is-pressed");
@@ -83,3 +166,11 @@ function drawFortune() {
 }
 
 drawButton.addEventListener("click", drawFortune);
+soundButton.addEventListener("click", async () => {
+  if (musicOn) {
+    stopMusic();
+    return;
+  }
+
+  await startMusic();
+});

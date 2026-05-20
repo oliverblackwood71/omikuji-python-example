@@ -64,8 +64,15 @@ body {
 
 .brand-row {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 28px;
+}
+
+.brand-lights {
+  display: flex;
+  gap: 10px;
 }
 
 .brand-dot {
@@ -85,6 +92,43 @@ body {
 
 .brand-dot-yellow {
   background: var(--yellow);
+}
+
+.sound-button {
+  min-width: 112px;
+  padding: 10px 14px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 900;
+  background: #ffffff;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 0 5px 0 rgba(23, 32, 51, 0.22);
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+
+.sound-button:hover {
+  background: #fff7cc;
+}
+
+.sound-button[aria-pressed="true"] {
+  color: #ffffff;
+  background: var(--blue);
+}
+
+.sound-button:active {
+  box-shadow: 0 2px 0 rgba(23, 32, 51, 0.22);
+  transform: translateY(3px);
+}
+
+.sound-button:focus-visible {
+  outline: 4px solid var(--yellow);
+  outline-offset: 4px;
 }
 
 .intro {
@@ -267,6 +311,16 @@ h1 {
     padding: 24px 18px;
     border-width: 3px;
     border-radius: 22px;
+  }
+
+  .brand-row {
+    margin-bottom: 22px;
+  }
+
+  .sound-button {
+    min-width: 98px;
+    padding: 9px 12px;
+    font-size: 0.8rem;
   }
 
   .machine {
