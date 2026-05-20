@@ -213,6 +213,16 @@ function revealTicket() {
   ticket.classList.add("is-revealed");
 }
 
+function sparkleTicket() {
+  ticket.classList.remove("is-sparkling");
+  void ticket.offsetWidth;
+  ticket.classList.add("is-sparkling");
+
+  window.setTimeout(() => {
+    ticket.classList.remove("is-sparkling");
+  }, 560);
+}
+
 function launchConfetti() {
   const colors = ["#f04f4f", "#2f80ed", "#ffd84d", "#2dbf78", "#ffffff"];
 
@@ -261,6 +271,7 @@ function drawFortune() {
     renderState();
     setTicketClass(fortune.className);
     revealTicket();
+    sparkleTicket();
 
     if (fortune.label === "大吉") {
       launchConfetti();
@@ -281,7 +292,18 @@ function resetState() {
   renderState();
 }
 
+function renderGameToText() {
+  return JSON.stringify({
+    mode: isDrawing ? "drawing" : "ready",
+    drawCount: count,
+    best: best ? best.label : null,
+    currentResult: fortuneResult.textContent,
+    history,
+  });
+}
+
 loadState();
+window.render_game_to_text = renderGameToText;
 drawButton.addEventListener("click", drawFortune);
 resetButton.addEventListener("click", resetState);
 soundButton.addEventListener("click", async () => {

@@ -188,6 +188,7 @@ h1 {
 }
 
 .ticket {
+  position: relative;
   min-height: 260px;
   padding: 30px;
   background: #fffdf2;
@@ -202,6 +203,22 @@ h1 {
 
 .ticket.is-revealed {
   animation: pop-reveal 360ms cubic-bezier(0.18, 0.9, 0.28, 1.2);
+}
+
+.ticket.is-sparkling::after {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  width: 18px;
+  height: 18px;
+  background: var(--yellow);
+  border-radius: 50%;
+  box-shadow:
+    -32px 28px 0 -4px var(--blue),
+    20px 42px 0 -5px var(--red),
+    -10px 70px 0 -6px var(--green);
+  content: "";
+  animation: sparkle-burst 520ms ease-out forwards;
 }
 
 .ticket.is-drawing {
@@ -252,6 +269,10 @@ h1 {
 }
 
 .draw-button {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  place-items: center;
   min-height: 150px;
   padding: 22px;
   color: #ffffff;
@@ -269,6 +290,81 @@ h1 {
     filter 120ms ease;
 }
 
+.draw-stage {
+  position: relative;
+  display: grid;
+  width: 78px;
+  height: 62px;
+  place-items: center;
+}
+
+.draw-button-label {
+  position: relative;
+  z-index: 2;
+}
+
+.omikuji-box {
+  position: relative;
+  width: 54px;
+  height: 46px;
+  background: #fff7cc;
+  border: 4px solid var(--ink);
+  border-radius: 12px 12px 18px 18px;
+  box-shadow: inset 0 -8px 0 rgba(255, 216, 77, 0.62);
+  transform-origin: 50% 80%;
+}
+
+.omikuji-box::before {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 34px;
+  height: 14px;
+  background: #ffffff;
+  border: 4px solid var(--ink);
+  border-radius: 999px;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.stick {
+  position: absolute;
+  top: -26px;
+  width: 8px;
+  height: 32px;
+  background: #ffffff;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  transform-origin: 50% 100%;
+}
+
+.stick-one {
+  left: 13px;
+  transform: rotate(-15deg);
+}
+
+.stick-two {
+  left: 25px;
+}
+
+.stick-three {
+  right: 13px;
+  transform: rotate(15deg);
+}
+
+.flying-slip {
+  position: absolute;
+  top: 27px;
+  left: 50%;
+  width: 14px;
+  height: 44px;
+  opacity: 0;
+  background: #ffffff;
+  border: 3px solid var(--ink);
+  border-radius: 999px;
+  transform: translate(-50%, 0) rotate(0deg);
+}
+
 .draw-button:hover {
   filter: brightness(1.04);
 }
@@ -277,6 +373,18 @@ h1 {
 .draw-button.is-pressed {
   box-shadow: 0 4px 0 #9e2d2d;
   transform: translateY(6px);
+}
+
+.draw-button.is-pressed .omikuji-box {
+  animation: box-shake 180ms ease-in-out infinite;
+}
+
+.draw-button.is-pressed .stick {
+  animation: stick-wiggle 180ms ease-in-out infinite;
+}
+
+.draw-button.is-pressed .flying-slip {
+  animation: slip-fly 720ms cubic-bezier(0.18, 0.9, 0.28, 1.2) forwards;
 }
 
 .draw-button:focus-visible {
@@ -405,6 +513,61 @@ h1 {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes box-shake {
+  0%,
+  100% {
+    transform: rotate(-7deg) translateY(0);
+  }
+
+  50% {
+    transform: rotate(7deg) translateY(-3px);
+  }
+}
+
+@keyframes stick-wiggle {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -4px;
+  }
+}
+
+@keyframes slip-fly {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 4px) rotate(0deg) scale(0.8);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -78px) rotate(22deg) scale(1.05);
+  }
+}
+
+@keyframes sparkle-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(0deg);
+  }
+
+  55% {
+    opacity: 1;
+    transform: scale(1.16) rotate(18deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.62) rotate(42deg);
   }
 }
 

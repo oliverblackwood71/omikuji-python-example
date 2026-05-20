@@ -44,7 +44,15 @@
           </div>
 
           <button class="draw-button" id="drawButton" type="button">
-            おみくじを引く
+            <span class="draw-stage" aria-hidden="true">
+              <span class="omikuji-box">
+                <span class="stick stick-one"></span>
+                <span class="stick stick-two"></span>
+                <span class="stick stick-three"></span>
+              </span>
+              <span class="flying-slip" id="flyingSlip"></span>
+            </span>
+            <span class="draw-button-label">おみくじを引く</span>
           </button>
 
           <div class="status-grid" aria-label="プレイ状況">
