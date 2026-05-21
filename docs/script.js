@@ -36,6 +36,7 @@ const confettiLayer = document.querySelector("#confettiLayer");
 const brandDots = document.querySelectorAll(".brand-dot");
 const historyList = document.querySelector("#historyList");
 const resetButton = document.querySelector("#resetButton");
+const fortuneCanvas = document.querySelector("#fortune3d");
 
 const storageKey = "omikuji-pocket-state";
 
@@ -311,6 +312,7 @@ function renderGameToText() {
 loadState();
 window.render_game_to_text = renderGameToText;
 drawButton.addEventListener("click", drawFortune);
+fortuneCanvas.addEventListener("click", drawFortune);
 resetButton.addEventListener("click", resetState);
 soundButton.addEventListener("click", async () => {
   if (musicOn) {

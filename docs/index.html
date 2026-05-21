@@ -26,40 +26,27 @@
           </button>
         </div>
 
-        <div class="hero-row">
-          <div class="intro">
-            <p class="mini-label">PythonからWeb UIへ</p>
-            <h1 id="game-title">おみくじポケット</h1>
-            <p>
-              ボタンを押すだけで今日の運勢をチェック。ターミナル版のおみくじを、
-              ブラウザで遊べる小さなゲーム風UIにしました。
-            </p>
-          </div>
-          <div class="three-stage">
-            <canvas class="fortune-3d" id="fortune3d" aria-hidden="true"></canvas>
-          </div>
+        <div class="intro">
+          <p class="mini-label">3Dおみくじ体験</p>
+          <h1 id="game-title">おみくじポケット</h1>
         </div>
 
-        <div class="machine" aria-live="polite">
-          <div class="ticket" id="ticket">
-            <p class="ticket-label">今日の結果</p>
-            <p class="fortune-result" id="fortuneResult">未抽選</p>
-            <p class="fortune-message" id="fortuneMessage">
-              まずは大きなボタンを押して、おみくじを引いてみましょう。
-            </p>
-          </div>
+        <div class="machine scene-machine" aria-live="polite">
+          <div class="three-stage">
+            <canvas class="fortune-3d" id="fortune3d" aria-label="3Dおみくじ箱"></canvas>
+            <button class="stage-hit" id="drawButton" type="button">
+              <span>箱を振る</span>
+            </button>
+            <p class="stage-hint">箱を押すと、くじ棒が飛び出します。</p>
 
-          <button class="draw-button" id="drawButton" type="button">
-            <span class="draw-stage" aria-hidden="true">
-              <span class="omikuji-box">
-                <span class="stick stick-one"></span>
-                <span class="stick stick-two"></span>
-                <span class="stick stick-three"></span>
-              </span>
-              <span class="flying-slip" id="flyingSlip"></span>
-            </span>
-            <span class="draw-button-label">おみくじを引く</span>
-          </button>
+            <div class="ticket" id="ticket">
+              <p class="ticket-label">今日の運勢</p>
+              <p class="fortune-result" id="fortuneResult">未抽選</p>
+              <p class="fortune-message" id="fortuneMessage">
+                3Dのおみくじ箱を振って、今日の一枚を引いてみましょう。
+              </p>
+            </div>
+          </div>
 
           <div class="status-grid" aria-label="プレイ状況">
             <div class="status-card">

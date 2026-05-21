@@ -10,7 +10,10 @@ Original prompt: アニメーションつけたい
 - Moved the Three.js scene into its own unframed top stage after the background placement clipped the model.
 - Vendored Three.js `0.177.0` files locally under `docs/vendor/` so the scene does not depend on a CDN at runtime.
 - Verified desktop and mobile screenshots, draw interaction, and canvas pixel output for the 3D scene.
+- Created branch `codex/3d-omikuji-upgrade` for the model-first GUI redesign.
+- Replaced the small decorative model with a large cylinder-style omikuji box, table stage, clickable canvas, flying draw stick, and in-stage result paper.
+- Verified the upgraded branch on desktop and mobile with screenshots, localStorage reload checks, draw-button state checks, and Three.js canvas pixel output.
 
 ## TODO
 
-- Next suggestion: refine the 3D model shape or add a gentle result-specific color pulse if more polish is needed.
+- Next suggestion: add richer paper-unfolding or box texture detail if the branch becomes the new main version.
