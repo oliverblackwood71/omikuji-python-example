@@ -21,9 +21,6 @@
             <span class="brand-dot brand-dot-blue"></span>
             <span class="brand-dot brand-dot-yellow"></span>
           </div>
-          <button class="sound-button" id="soundButton" type="button" aria-pressed="false">
-            BGM OFF
-          </button>
         </div>
 
         <div class="intro">
@@ -34,42 +31,25 @@
         <div class="machine scene-machine" aria-live="polite">
           <div class="three-stage">
             <canvas class="fortune-3d" id="fortune3d" aria-label="3Dおみくじ箱"></canvas>
-            <button class="stage-hit" id="drawButton" type="button">
-              <span>箱を振る</span>
-            </button>
-            <p class="stage-hint">箱を押すと、くじ棒が飛び出します。</p>
 
-            <div class="ticket" id="ticket">
+            <div class="ticket is-folded" id="ticket">
               <p class="ticket-label">今日の運勢</p>
               <p class="fortune-result" id="fortuneResult">未抽選</p>
               <p class="fortune-message" id="fortuneMessage">
-                3Dのおみくじ箱を振って、今日の一枚を引いてみましょう。
+                今日の一枚を開きます。
               </p>
+              <div class="fortune-guidance" id="fortuneGuidance" hidden>
+                <span>開運の一手</span>
+                <strong id="fortuneAction"></strong>
+              </div>
             </div>
           </div>
 
-          <div class="status-grid" aria-label="プレイ状況">
-            <div class="status-card">
-              <span class="status-label">引いた回数</span>
-              <strong id="drawCount">0回</strong>
-            </div>
-            <div class="status-card">
-              <span class="status-label">今日のベスト</span>
-              <strong id="bestFortune">まだなし</strong>
-            </div>
-          </div>
-
-          <div class="history-panel">
-            <div>
-              <span class="status-label">最近の結果</span>
-              <ol class="history-list" id="historyList">
-                <li>まだ引いていません</li>
-              </ol>
-            </div>
-            <button class="reset-button" id="resetButton" type="button">
-              記録をリセット
-            </button>
-          </div>
+          <output class="sr-only" id="drawCount">0回</output>
+          <output class="sr-only" id="bestFortune">まだなし</output>
+          <ol class="sr-only" id="historyList">
+            <li>まだ引いていません</li>
+          </ol>
         </div>
       </section>
     </main>

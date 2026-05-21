@@ -4,38 +4,41 @@ const fortunes = [
     label: "大吉",
     className: "is-great",
     message: "今日は新しいことを始めるチャンス。小さく試すだけでも、ちゃんと前に進めます。",
+    action: "朝のうちに、先延ばしにしていた一歩を始める。",
   },
   {
     rank: 3,
     label: "中吉",
     className: "is-good",
     message: "落ち着いて進めれば大丈夫。ひとつずつ片付けると、良い流れが作れそうです。",
+    action: "机まわりを整えて、今日やることを一つに絞る。",
   },
   {
     rank: 2,
     label: "小吉",
     className: "is-small",
     message: "今日は小さな改善が効く日。気になっていた作業をひとつだけ進めてみましょう。",
+    action: "気になっていた小さな用事を一つ終わらせる。",
   },
   {
     rank: 1,
     label: "末吉",
     className: "is-late",
     message: "無理に急がず、準備を整えると良さそうです。休むことも立派な作戦です。",
+    action: "焦らず準備を整え、休憩を先に確保する。",
   },
 ];
 
 const ticket = document.querySelector("#ticket");
-const drawButton = document.querySelector("#drawButton");
 const fortuneResult = document.querySelector("#fortuneResult");
 const fortuneMessage = document.querySelector("#fortuneMessage");
+const fortuneGuidance = document.querySelector("#fortuneGuidance");
+const fortuneAction = document.querySelector("#fortuneAction");
 const drawCount = document.querySelector("#drawCount");
 const bestFortune = document.querySelector("#bestFortune");
-const soundButton = document.querySelector("#soundButton");
 const confettiLayer = document.querySelector("#confettiLayer");
 const brandDots = document.querySelectorAll(".brand-dot");
 const historyList = document.querySelector("#historyList");
-const resetButton = document.querySelector("#resetButton");
 const fortuneCanvas = document.querySelector("#fortune3d");
 
 const storageKey = "omikuji-pocket-state";
@@ -47,6 +50,7 @@ let isDrawing = false;
 let audioContext = null;
 let bgmTimer = null;
 let musicOn = false;
+let pointerStart = null;
 
 function findFortuneByLabel(label) {
   return fortunes.find((fortune) => fortune.label === label) || null;
@@ -161,15 +165,11 @@ async function startMusic() {
   const context = getAudioContext();
   await context.resume();
   musicOn = true;
-  soundButton.textContent = "BGM ON";
-  soundButton.setAttribute("aria-pressed", "true");
   playMelodyStep();
 }
 
 function stopMusic() {
   musicOn = false;
-  soundButton.textContent = "BGM OFF";
-  soundButton.setAttribute("aria-pressed", "false");
 
   if (bgmTimer) {
     window.clearTimeout(bgmTimer);
@@ -209,6 +209,7 @@ function setTicketClass(className) {
 }
 
 function revealTicket() {
+  ticket.classList.remove("is-folded");
   ticket.classList.remove("is-revealed");
   void ticket.offsetWidth;
   ticket.classList.add("is-revealed");
@@ -255,11 +256,8 @@ function drawFortune() {
   window.dispatchEvent(new CustomEvent("omikuji:draw-start"));
   playDrawSound();
   isDrawing = true;
-  drawButton.disabled = true;
-  drawButton.classList.add("is-pressed");
   ticket.classList.add("is-drawing");
-  fortuneResult.textContent = "抽選中...";
-  fortuneMessage.textContent = "箱をシャカシャカ振っています。";
+  fortuneGuidance.hidden = true;
 
   window.setTimeout(() => {
     const fortune = pickFortune();
@@ -267,6 +265,8 @@ function drawFortune() {
     count += 1;
     fortuneResult.textContent = fortune.label;
     fortuneMessage.textContent = fortune.message;
+    fortuneAction.textContent = fortune.action;
+    fortuneGuidance.hidden = false;
     updateBest(fortune);
     history = [fortune.label, ...history].slice(0, 5);
     saveState();
@@ -285,8 +285,6 @@ function drawFortune() {
       }),
     );
     ticket.classList.remove("is-drawing");
-    drawButton.classList.remove("is-pressed");
-    drawButton.disabled = false;
     isDrawing = false;
   }, 720);
 }
@@ -311,14 +309,41 @@ function renderGameToText() {
 
 loadState();
 window.render_game_to_text = renderGameToText;
-drawButton.addEventListener("click", drawFortune);
-fortuneCanvas.addEventListener("click", drawFortune);
-resetButton.addEventListener("click", resetState);
-soundButton.addEventListener("click", async () => {
-  if (musicOn) {
-    stopMusic();
+fortuneCanvas.addEventListener("pointerdown", (event) => {
+  if (!musicOn) {
+    startMusic();
+  }
+
+  pointerStart = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+  };
+  fortuneCanvas.setPointerCapture(event.pointerId);
+  fortuneCanvas.classList.add("is-grabbing");
+  window.dispatchEvent(new CustomEvent("omikuji:shake-preview"));
+});
+fortuneCanvas.addEventListener("pointermove", (event) => {
+  if (!pointerStart || pointerStart.id !== event.pointerId) {
     return;
   }
 
-  await startMusic();
+  const distance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+
+  if (distance > 18) {
+    window.dispatchEvent(new CustomEvent("omikuji:shake-preview"));
+  }
+});
+fortuneCanvas.addEventListener("pointerup", (event) => {
+  if (!pointerStart || pointerStart.id !== event.pointerId) {
+    return;
+  }
+
+  pointerStart = null;
+  fortuneCanvas.classList.remove("is-grabbing");
+  drawFortune();
+});
+fortuneCanvas.addEventListener("pointercancel", () => {
+  pointerStart = null;
+  fortuneCanvas.classList.remove("is-grabbing");
 });

@@ -13,6 +13,9 @@ Original prompt: アニメーションつけたい
 - Created branch `codex/3d-omikuji-upgrade` for the model-first GUI redesign.
 - Replaced the small decorative model with a large cylinder-style omikuji box, table stage, clickable canvas, flying draw stick, and in-stage result paper.
 - Verified the upgraded branch on desktop and mobile with screenshots, localStorage reload checks, draw-button state checks, and Three.js canvas pixel output.
+- Removed the instruction bubble, draw button, sound button, and visible stats panels for a direct-object interaction pass.
+- Added tap/drag draw handling on the 3D canvas and a fortune-paper `開運の一手` action line.
+- Verified the direct-interaction pass: initial paper stays folded, desktop drag and mobile tap draw correctly, visible draw buttons are gone, and the result paper shows the action guidance.
 
 ## TODO
 

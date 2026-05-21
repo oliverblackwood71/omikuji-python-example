@@ -172,6 +172,9 @@ window.addEventListener("omikuji:draw-start", () => {
   shakePower = 1;
   liftPower = 1;
 });
+window.addEventListener("omikuji:shake-preview", () => {
+  shakePower = Math.max(shakePower, 0.42);
+});
 window.addEventListener("omikuji:draw-result", (event) => {
   resultPulse = event.detail.label === "大吉" ? 1.35 : 0.82;
   body.material.color.set(event.detail.label === "大吉" ? 0xc32838 : 0xb83b2f);
