@@ -16,7 +16,10 @@ Original prompt: アニメーションつけたい
 - Removed the instruction bubble, draw button, sound button, and visible stats panels for a direct-object interaction pass.
 - Added tap/drag draw handling on the 3D canvas and a fortune-paper `開運の一手` action line.
 - Verified the direct-interaction pass: initial paper stays folded, desktop drag and mobile tap draw correctly, visible draw buttons are gone, and the result paper shows the action guidance.
+- Created `codex/3d-omikuji-motion-upgrade` from the direct 3D branch for motion-focused UX work.
+- Added drag-direction tilt, gesture intensity, staged draw events, a 3D flying paper slip, and a DOM paper-unfold animation.
+- Verified the motion sequence on desktop drag and mobile tap with screenshots, console checks, and responsive layout checks.
 
 ## TODO
 
-- Next suggestion: add richer paper-unfolding or box texture detail if the branch becomes the new main version.
+- Next suggestion: refine textures, sound timing, and paper placement if this motion branch becomes the new main version.

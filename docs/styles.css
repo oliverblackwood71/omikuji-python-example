@@ -243,8 +243,8 @@ h1 {
     box-shadow 180ms ease;
 }
 
-.ticket.is-revealed {
-  animation: pop-reveal 360ms cubic-bezier(0.18, 0.9, 0.28, 1.2);
+.ticket.is-revealed.is-unfolding {
+  animation: paper-unfold 620ms cubic-bezier(0.16, 0.92, 0.2, 1.04);
 }
 
 .ticket.is-folded {
@@ -498,6 +498,31 @@ h1 {
 
   100% {
     opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes paper-unfold {
+  0% {
+    opacity: 0;
+    clip-path: inset(44% 12% 44% 12% round 18px);
+    transform: translateY(58px) scale(0.42, 0.12) rotate(10deg);
+  }
+
+  42% {
+    opacity: 1;
+    clip-path: inset(20% 5% 20% 5% round 18px);
+    transform: translateY(18px) scale(0.82, 0.48) rotate(-4deg);
+  }
+
+  76% {
+    clip-path: inset(0 0 0 0 round 18px);
+    transform: translateY(-8px) scale(1.03, 1.02) rotate(1deg);
+  }
+
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 18px);
     transform: translateY(0) scale(1) rotate(0deg);
   }
 }

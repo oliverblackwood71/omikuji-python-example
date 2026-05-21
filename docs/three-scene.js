@@ -123,9 +123,38 @@ slipGlow.position.set(0, 2.12, 0.18);
 slipGlow.visible = false;
 omikuji.add(slipGlow);
 
+const flyingPaper = new THREE.Group();
+const paperSheet = new THREE.Mesh(
+  new THREE.PlaneGeometry(1.18, 2.18, 1, 4),
+  new THREE.MeshStandardMaterial({
+    color: 0xfff1cf,
+    roughness: 0.68,
+    side: THREE.DoubleSide,
+  }),
+);
+const paperStripe = new THREE.Mesh(
+  new THREE.PlaneGeometry(0.08, 2.02),
+  new THREE.MeshBasicMaterial({
+    color: 0xf04f4f,
+    side: THREE.DoubleSide,
+  }),
+);
+paperStripe.position.z = 0.012;
+paperStripe.position.x = -0.42;
+flyingPaper.add(paperSheet, paperStripe);
+flyingPaper.position.set(0.16, 2.18, 0.14);
+flyingPaper.rotation.x = -0.42;
+flyingPaper.visible = false;
+omikuji.add(flyingPaper);
+
 let shakePower = 0;
 let liftPower = 0;
+let paperPower = 0;
 let resultPulse = 0;
+let dragTargetX = 0;
+let dragTargetY = 0;
+let dragTiltX = 0;
+let dragTiltY = 0;
 let lastTime = performance.now();
 
 function resize() {
@@ -144,10 +173,16 @@ function animate(time) {
   lastTime = time;
   shakePower = Math.max(0, shakePower - delta * 1.65);
   liftPower = Math.max(0, liftPower - delta * 1.08);
+  paperPower = Math.max(0, paperPower - delta * 0.88);
   resultPulse = Math.max(0, resultPulse - delta * 1.4);
+  dragTargetX *= 1 - delta * 5.4;
+  dragTargetY *= 1 - delta * 5.4;
+  dragTiltX += (dragTargetX - dragTiltX) * Math.min(delta * 11, 1);
+  dragTiltY += (dragTargetY - dragTiltY) * Math.min(delta * 11, 1);
 
-  omikuji.rotation.y = Math.sin(t * 0.8) * 0.2 + Math.sin(t * 16) * shakePower * 0.24;
-  omikuji.rotation.z = Math.sin(t * 2.2) * 0.035 + Math.sin(t * 22) * shakePower * 0.18;
+  omikuji.rotation.x = dragTiltY * 0.18;
+  omikuji.rotation.y = Math.sin(t * 0.8) * 0.2 + dragTiltX * 0.2 + Math.sin(t * 16) * shakePower * 0.24;
+  omikuji.rotation.z = Math.sin(t * 2.2) * 0.035 + dragTiltX * -0.18 + Math.sin(t * 22) * shakePower * 0.18;
   omikuji.position.y = -0.12 + Math.sin(t * 2.4) * 0.06 + shakePower * 0.12;
   omikuji.scale.setScalar(1 + resultPulse * 0.045);
   sticks.forEach((stick, index) => {
@@ -160,6 +195,14 @@ function animate(time) {
   luckyStick.rotation.z = liftPower * -0.28 + Math.sin(t * 18) * shakePower * 0.08;
   slipGlow.material.opacity = 0.12 + Math.max(liftPower, resultPulse) * 0.38;
   slipGlow.scale.setScalar(0.8 + Math.max(liftPower, resultPulse) * 0.75);
+  flyingPaper.visible = paperPower > 0.03;
+  flyingPaper.position.set(
+    0.16 + (1 - paperPower) * 0.86,
+    2.18 + (1 - paperPower) * 0.86,
+    0.14 + (1 - paperPower) * 1.08,
+  );
+  flyingPaper.rotation.set(-0.42 + (1 - paperPower) * -0.42, paperPower * 0.16, (1 - paperPower) * 0.3);
+  flyingPaper.scale.setScalar(0.28 + (1 - paperPower) * 0.48);
   halo.material.opacity = 0.12 + resultPulse * 0.18;
   halo.scale.setScalar(1 + resultPulse * 0.18);
 
@@ -168,12 +211,24 @@ function animate(time) {
 }
 
 window.addEventListener("resize", resize);
-window.addEventListener("omikuji:draw-start", () => {
-  shakePower = 1;
-  liftPower = 1;
+window.addEventListener("omikuji:draw-start", (event) => {
+  shakePower = Math.max(0.78, event.detail.intensity);
+  liftPower = 0;
+  paperPower = 0;
 });
 window.addEventListener("omikuji:shake-preview", () => {
   shakePower = Math.max(shakePower, 0.42);
+});
+window.addEventListener("omikuji:drag", (event) => {
+  dragTargetX = THREE.MathUtils.clamp(event.detail.dx / 110, -1.15, 1.15);
+  dragTargetY = THREE.MathUtils.clamp(event.detail.dy / 110, -1, 1);
+  shakePower = Math.max(shakePower, 0.28 + event.detail.velocity * 0.52);
+});
+window.addEventListener("omikuji:stick-release", () => {
+  liftPower = 1;
+});
+window.addEventListener("omikuji:paper-release", () => {
+  paperPower = 1;
 });
 window.addEventListener("omikuji:draw-result", (event) => {
   resultPulse = event.detail.label === "大吉" ? 1.35 : 0.82;

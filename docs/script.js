@@ -51,6 +51,7 @@ let audioContext = null;
 let bgmTimer = null;
 let musicOn = false;
 let pointerStart = null;
+let pointerLast = null;
 
 function findFortuneByLabel(label) {
   return fortunes.find((fortune) => fortune.label === label) || null;
@@ -208,11 +209,16 @@ function setTicketClass(className) {
   ticket.classList.add(className);
 }
 
+function foldTicket() {
+  ticket.classList.remove("is-revealed", "is-sparkling", "is-unfolding");
+  ticket.classList.add("is-folded");
+}
+
 function revealTicket() {
   ticket.classList.remove("is-folded");
-  ticket.classList.remove("is-revealed");
+  ticket.classList.remove("is-revealed", "is-unfolding");
   void ticket.offsetWidth;
-  ticket.classList.add("is-revealed");
+  ticket.classList.add("is-unfolding", "is-revealed");
 }
 
 function sparkleTicket() {
@@ -248,16 +254,30 @@ function launchConfetti() {
   }
 }
 
-function drawFortune() {
+function drawFortune(gesture = {}) {
   if (isDrawing) {
     return;
   }
 
-  window.dispatchEvent(new CustomEvent("omikuji:draw-start"));
+  const intensity = Math.min(Math.max(gesture.intensity || 0.48, 0.32), 1.2);
+
+  window.dispatchEvent(
+    new CustomEvent("omikuji:draw-start", {
+      detail: { intensity },
+    }),
+  );
   playDrawSound();
   isDrawing = true;
-  ticket.classList.add("is-drawing");
+  foldTicket();
   fortuneGuidance.hidden = true;
+
+  window.setTimeout(() => {
+    window.dispatchEvent(new CustomEvent("omikuji:stick-release"));
+  }, 260);
+
+  window.setTimeout(() => {
+    window.dispatchEvent(new CustomEvent("omikuji:paper-release"));
+  }, 650);
 
   window.setTimeout(() => {
     const fortune = pickFortune();
@@ -284,9 +304,8 @@ function drawFortune() {
         detail: { label: fortune.label },
       }),
     );
-    ticket.classList.remove("is-drawing");
     isDrawing = false;
-  }, 720);
+  }, 980);
 }
 
 function resetState() {
@@ -318,7 +337,10 @@ fortuneCanvas.addEventListener("pointerdown", (event) => {
     id: event.pointerId,
     x: event.clientX,
     y: event.clientY,
+    time: performance.now(),
+    maxDistance: 0,
   };
+  pointerLast = pointerStart;
   fortuneCanvas.setPointerCapture(event.pointerId);
   fortuneCanvas.classList.add("is-grabbing");
   window.dispatchEvent(new CustomEvent("omikuji:shake-preview"));
@@ -328,10 +350,31 @@ fortuneCanvas.addEventListener("pointermove", (event) => {
     return;
   }
 
-  const distance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+  const dx = event.clientX - pointerStart.x;
+  const dy = event.clientY - pointerStart.y;
+  const distance = Math.hypot(dx, dy);
+  const now = performance.now();
+  const deltaTime = Math.max(now - pointerLast.time, 16);
+  const vx = (event.clientX - pointerLast.x) / deltaTime;
+  const vy = (event.clientY - pointerLast.y) / deltaTime;
+
+  pointerStart.maxDistance = Math.max(pointerStart.maxDistance, distance);
+  pointerLast = {
+    x: event.clientX,
+    y: event.clientY,
+    time: now,
+  };
 
   if (distance > 18) {
-    window.dispatchEvent(new CustomEvent("omikuji:shake-preview"));
+    window.dispatchEvent(
+      new CustomEvent("omikuji:drag", {
+        detail: {
+          dx,
+          dy,
+          velocity: Math.min(Math.hypot(vx, vy) * 15, 1.2),
+        },
+      }),
+    );
   }
 });
 fortuneCanvas.addEventListener("pointerup", (event) => {
@@ -339,11 +382,18 @@ fortuneCanvas.addEventListener("pointerup", (event) => {
     return;
   }
 
+  const elapsed = Math.max(performance.now() - pointerStart.time, 1);
+  const gesture = {
+    intensity: Math.min(0.38 + pointerStart.maxDistance / 160 + 160 / elapsed, 1.2),
+  };
+
   pointerStart = null;
+  pointerLast = null;
   fortuneCanvas.classList.remove("is-grabbing");
-  drawFortune();
+  drawFortune(gesture);
 });
 fortuneCanvas.addEventListener("pointercancel", () => {
   pointerStart = null;
+  pointerLast = null;
   fortuneCanvas.classList.remove("is-grabbing");
 });
