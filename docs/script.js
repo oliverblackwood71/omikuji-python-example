@@ -251,6 +251,7 @@ function drawFortune() {
     return;
   }
 
+  window.dispatchEvent(new CustomEvent("omikuji:draw-start"));
   playDrawSound();
   isDrawing = true;
   drawButton.disabled = true;
@@ -277,6 +278,11 @@ function drawFortune() {
       launchConfetti();
     }
 
+    window.dispatchEvent(
+      new CustomEvent("omikuji:draw-result", {
+        detail: { label: fortune.label },
+      }),
+    );
     ticket.classList.remove("is-drawing");
     drawButton.classList.remove("is-pressed");
     drawButton.disabled = false;

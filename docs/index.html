@@ -8,6 +8,7 @@
       name="description"
       content="Pythonおみくじから発展した、ブラウザで遊べる小さなおみくじWeb UIです。"
     >
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -25,13 +26,18 @@
           </button>
         </div>
 
-        <div class="intro">
-          <p class="mini-label">PythonからWeb UIへ</p>
-          <h1 id="game-title">おみくじポケット</h1>
-          <p>
-            ボタンを押すだけで今日の運勢をチェック。ターミナル版のおみくじを、
-            ブラウザで遊べる小さなゲーム風UIにしました。
-          </p>
+        <div class="hero-row">
+          <div class="intro">
+            <p class="mini-label">PythonからWeb UIへ</p>
+            <h1 id="game-title">おみくじポケット</h1>
+            <p>
+              ボタンを押すだけで今日の運勢をチェック。ターミナル版のおみくじを、
+              ブラウザで遊べる小さなゲーム風UIにしました。
+            </p>
+          </div>
+          <div class="three-stage">
+            <canvas class="fortune-3d" id="fortune3d" aria-hidden="true"></canvas>
+          </div>
         </div>
 
         <div class="machine" aria-live="polite">
@@ -81,6 +87,14 @@
       </section>
     </main>
 
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="three-scene.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

@@ -6,7 +6,11 @@ Original prompt: アニメーションつけたい
 - Target animation set: animated omikuji cup inside the draw button, flying fortune slip during draw, and small sparkles when the result appears.
 - Added HTML/CSS/JS for the animated omikuji box, flying slip, result sparkles, and `window.render_game_to_text` for test visibility.
 - Verified desktop and mobile with Playwright fallback because the skill-provided web game client failed to load `playwright-core` in this environment.
+- Started the next step: add a transparent Three.js canvas with a rotating 3D omikuji box that reacts to draw events.
+- Moved the Three.js scene into its own unframed top stage after the background placement clipped the model.
+- Vendored Three.js `0.177.0` files locally under `docs/vendor/` so the scene does not depend on a CDN at runtime.
+- Verified desktop and mobile screenshots, draw interaction, and canvas pixel output for the 3D scene.
 
 ## TODO
 
-- Next suggestion: consider a lightweight Three.js scene only after the current CSS/JS animation article section is finished.
+- Next suggestion: refine the 3D model shape or add a gentle result-specific color pulse if more polish is needed.

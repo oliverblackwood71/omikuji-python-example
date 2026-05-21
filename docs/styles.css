@@ -77,9 +77,11 @@ body {
 }
 
 .brand-row,
+.hero-row,
 .intro,
 .machine {
   position: relative;
+  z-index: 1;
 }
 
 .brand-row {
@@ -157,6 +159,24 @@ body {
 
 .intro {
   max-width: 680px;
+}
+
+.hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 18px;
+  align-items: center;
+}
+
+.three-stage {
+  min-height: 214px;
+}
+
+.fortune-3d {
+  display: block;
+  width: 100%;
+  height: 214px;
+  pointer-events: none;
 }
 
 .mini-label {
@@ -619,6 +639,18 @@ h1 {
 
   .machine {
     grid-template-columns: 1fr;
+  }
+
+  .hero-row {
+    grid-template-columns: 1fr;
+  }
+
+  .three-stage {
+    min-height: 166px;
+  }
+
+  .fortune-3d {
+    height: 166px;
   }
 
   .ticket {
